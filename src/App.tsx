@@ -1,127 +1,35 @@
-// import React from 'react';
-// import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// import Login from './pages/Login';
-// import Signup from './pages/Signup';
-// import Home from './pages/Home';
-// import Profile from './pages/Profile';
-// import Chat from './pages/Chat';
-// import Network from './pages/Network';
-// import Jobs from './pages/Jobs';
-// import Layout from './components/layout/Layout';
-// export function App() {
-//   // For demo purposes, let's assume user is not logged in initially
-//   const isAuthenticated = true;
-//   return <Router>
-//       <Routes>
-//         <Route path="/login" element={<Login />} />
-//         <Route path="/signup" element={<Signup />} />
-//         {/* Protected routes */}
-//         <Route path="/" element={isAuthenticated ? <Layout>
-//                 <Home />
-//               </Layout> : <Navigate to="/login" />} />
-//         <Route path="/profile" element={isAuthenticated ? <Layout>
-//                 <Profile />
-//               </Layout> : <Navigate to="/login" />} />
-//         <Route path="/chat" element={isAuthenticated ? <Layout>
-//                 <Chat />
-//               </Layout> : <Navigate to="/login" />} />
-//         <Route path="/network" element={isAuthenticated ? <Layout>
-//                 <Network />
-//               </Layout> : <Navigate to="/login" />} />
-//         <Route path="/jobs" element={isAuthenticated ? <Layout>
-//                 <Jobs />
-//               </Layout> : <Navigate to="/login" />} />
-//       </Routes>
-//     </Router>;
-// }
-
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
-import Chat from "./pages/Chat";
-import Network from "./pages/Network";
-import Jobs from "./pages/Jobs";
-import Layout from "./components/layout/Layout";
-import { isAuth } from "./utils/auth"; // If in another file
-
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Layout } from './components/layout/Layout';
+import { StudentDashboard } from './pages/student/Dashboard';
+import { Courses } from './pages/student/Courses';
+import { Fees } from './pages/student/Fees';
+import { Calendar } from './pages/student/Calendar';
+import { Progress } from './pages/student/Progress';
+import { FacultyDashboard } from './pages/faculty/Dashboard';
+import { AdminDashboard } from './pages/admin/Dashboard';
+import { Login } from './pages/Login';
 export function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+  const [userRole, setUserRole] = useState('student'); // Default role for demonstration
+  return <Router>
+      <Layout userRole={userRole} setUserRole={setUserRole}>
+        <Routes>
+          {/* Student Routes */}
+          <Route path="/student/dashboard" element={userRole === 'student' ? <StudentDashboard /> : <Navigate to={`/${userRole}/dashboard`} />} />
+          <Route path="/student/courses" element={userRole === 'student' ? <Courses /> : <Navigate to={`/${userRole}/dashboard`} />} />
+          <Route path="/student/fees" element={userRole === 'student' ? <Fees /> : <Navigate to={`/${userRole}/dashboard`} />} />
+          <Route path="/student/calendar" element={userRole === 'student' ? <Calendar /> : <Navigate to={`/${userRole}/dashboard`} />} />
+          <Route path="/student/progress" element={userRole === 'student' ? <Progress /> : <Navigate to={`/${userRole}/dashboard`} />} />
+          <Route path="
+          " element={userRole === 'student' ? <Login /> : <Navigate to={`/${userRole}/dashboard`} />} />
 
-        {/* Protected routes */}
-        <Route
-          path="/"
-          element={
-            isAuth() ? (
-              <Layout>
-                <Home />
-              </Layout>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            isAuth() ? (
-              <Layout>
-                <Profile />
-              </Layout>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/chat"
-          element={
-            isAuth() ? (
-              <Layout>
-                <Chat />
-              </Layout>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/network"
-          element={
-            isAuth() ? (
-              <Layout>
-                <Network />
-              </Layout>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/jobs"
-          element={
-            isAuth() ? (
-              <Layout>
-                <Jobs />
-              </Layout>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-      </Routes>
-    </Router>
-  );
+          {/* Faculty Routes */}
+          <Route path="/faculty/dashboard" element={userRole === 'faculty' ? <FacultyDashboard /> : <Navigate to={`/${userRole}/dashboard`} />} />
+          {/* Admin Routes */}
+          <Route path="/admin/dashboard" element={userRole === 'admin' ? <AdminDashboard /> : <Navigate to={`/${userRole}/dashboard`} />} />
+          {/* Default redirect based on role */}
+          <Route path="*" element={<Navigate to={`/${userRole}/dashboard`} />} />
+        </Routes>
+      </Layout>
+    </Router>;
 }
-export default App;

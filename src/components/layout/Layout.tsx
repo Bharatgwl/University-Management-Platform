@@ -1,20 +1,29 @@
-import React from 'react';
-import Navbar from './Navbar';
-import Sidebar from './Sidebar';
-import Footer from './Footer';
+import React, { useState } from 'react';
+import { Sidebar } from './Sidebar';
+import { MobileNav } from './MobileNav';
+import { Header } from './Header';
 interface LayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
+  userRole: string;
+  setUserRole: (role: string) => void;
 }
-const Layout = ({
-  children
+export const Layout = ({
+  children,
+  userRole,
+  setUserRole
 }: LayoutProps) => {
-  return <div className="min-h-screen bg-gray-100">
-      <Navbar />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-4 md:p-6 max-w-7xl mx-auto">{children}</main>
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  return <div className="flex h-screen bg-gray-50 font-sans">
+      {/* Sidebar for desktop */}
+      <Sidebar userRole={userRole} isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+      {/* Main content */}
+      <div className="flex flex-col flex-1 w-full overflow-hidden">
+        <Header setSidebarOpen={setSidebarOpen} userRole={userRole} setUserRole={setUserRole} />
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50">
+          <div className="max-w-7xl mx-auto">{children}</div>
+        </main>
+        {/* Mobile navigation */}
+        <MobileNav userRole={userRole} />
       </div>
-      <Footer />
     </div>;
 };
-export default Layout;
